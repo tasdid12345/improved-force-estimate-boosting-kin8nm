@@ -4,7 +4,7 @@ import json
 import os
 import sys
 import time
-from io import BytesIO
+from io import StringIO
 
 import lightgbm as lgb
 import matplotlib
@@ -48,7 +48,9 @@ def get_with_retry(url, retries=5):
 def load_data():
     """Metadata via the openml package; the ARFF file itself via requests (timeout + retry)."""
     ds = openml.datasets.get_dataset(DATA_ID, download_data=False, download_qualities=False)
-    data, _ = arff.loadarff(BytesIO(get_with_retry(ds.url).content))
+    text = get_with_retry(ds.url).content.decode("utf-8", errors="replace")
+    # scipy's ARFF reader needs a text stream (newer scipy rejects bytes)
+    data, _ = arff.loadarff(StringIO(text))
     df = pd.DataFrame(data).astype(float)
     target = ds.default_target_attribute or df.columns[-1]
     if len(df) > MAX_ROWS:  # subsample very large data (not triggered here)
