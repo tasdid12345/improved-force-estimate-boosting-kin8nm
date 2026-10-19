@@ -1,0 +1,31 @@
+{
+  "question": "Can a cross-validated, gradient-boosted regressor give lower and more uniform error than a standard MLP baseline when estimating a continuous physical quantity from robot-arm sensor readings on a public stand-in dataset?",
+  "method": "OpenML kin8nm, one 80/20 split (fixed seed), inputs standardised on training data. Baseline: sklearn MLPRegressor. Improved: LightGBM with hyperparameters chosen by 5-fold CV on the training set plus sine/cosine features. Test-set MAE is the main metric; mean over three seeds.",
+  "dataset": {
+    "name": "OpenML kin8nm (robot-arm forward kinematics)",
+    "source_url": "https://www.openml.org/d/507",
+    "n_rows": 3107,
+    "n_train": 2485,
+    "n_test": 622,
+    "same_as_paper": false,
+    "baseline_is_papers_method": false
+  },
+  "metric_name": "MAE",
+  "higher_is_better": false,
+  "baseline": "scikit-learn MLPRegressor, two hidden layers of 64 units, early stopping, standardised inputs and target; stands in for the paper's CNN-RNN.",
+  "improved": "LightGBM regressor with grid-searched hyperparameters (5-fold CV on the training set only) and sine/cosine features of the eight inputs.",
+  "metrics": {
+    "baseline_score": 0.07818409865319227,
+    "improved_score": 0.0802607978023028,
+    "improvement": -0.0020766991491105308,
+    "baseline_score_std": 0.0006022728384235964,
+    "improved_score_std": 0.0005548993599093753,
+    "baseline_rmse": 0.10480409791408878,
+    "improved_rmse": 0.11327972657497193,
+    "baseline_r2": 0.7340448542215846,
+    "improved_r2": 0.6893020206709025,
+    "baseline_abs_err_std": 0.06978908940253886,
+    "improved_abs_err_std": 0.07993858602249364
+  },
+  "notes": "kin8nm is a simulated robot-arm dataset, not contact-force data; it is a stand-in only. The paper's neuromorphic-camera CRNN was not reproduced; the MLP is a generic baseline. Single train/test split; seeds vary model randomness only. Hyperparameters chosen by CV on training data; test set used once. Secondary metrics are RMSE, R^2 and the std of absolute error (uniformity proxy); classification F1 does not apply to regression."
+}
